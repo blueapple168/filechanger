@@ -14,6 +14,8 @@ INSERT_TEXT = "Tekst som skal settes inn: "
 NO_FILES_TO_CHANGE_TEXT = "Ingen filer å endre"
 RECURSIVE_TEXT = "Skal alle undermapper endres? "
 
+VALID_ACTIONS = ["lower", "upper", "remove", "insert", "replace"]
+
 def get_file_ext(file):
 	return os.path.splitext(file)[1]
 
@@ -124,8 +126,9 @@ working_dir = os.path.abspath(working_dir)
 
 if len(sys.argv) > 2:
 	action = sys.argv[2]
-else:
-	action = input(CHOOSE_ACTION_TEXT, ["lower", "upper", "remove", "insert", "replace"])
+
+if not action or action not in VALID_ACTIONS:
+	action = input(CHOOSE_ACTION_TEXT, VALID_ACTIONS)
 
 if len(sys.argv) > 3:
 	position = sys.argv[3]
