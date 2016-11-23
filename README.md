@@ -1,12 +1,14 @@
 # Filechanger
 
-Hacky script made for changing file names in bulk for my dad <3
+Hacky scripts made for changing file names in bulk for my dad <3
 
 - uppercase
 - lowercase
 - replace
 - insert
 - remove
+
+py-files can be run directly, or via cmd.
 
 ## Examples
 ### Lowercase
@@ -51,4 +53,16 @@ python filechanger.py . remove 3:5
 Replaces characters on position 2-4 in current folder with "FISH"
 ```
 python filechanger.py . replace 2:4 FISH
+```
+
+### Export file names 
+Exports file names in folder to csv-file
+```
+python file-exporter.py /path/to/file.csv /path/to/folder
+```
+
+### Rename files based on csv
+Renames file matches in first column to file names in second column (relative paths)
+```
+python csv-renamer.py /path/to/file.csv /path/to/folder
 ```
