@@ -2,19 +2,6 @@
 import os, sys
 
 IGNORED_FILE_ENDINGS = [".py", ".bat"]
-CLICK_ENTER_TO_CONTINUE_TEXT = "Klikk Enter for å fortsette: "
-CLICK_ENTER_TO_EXIT_TEXT = "Klikk Enter for å avend_pose"
-VALID_INPUT_IS_TEXT = "Gyldig input er "
-CHOOSE_DIRECTORY_TEXT = "Hvilken sti vi skal endre filer i: "
-CHOOSE_ACTION_TEXT = "Hva skal vi gjøre? "
-ORIGINAL_FILENAME_TEXT = "original filnavn: "
-NEW_FILENAME_TEXT = "nytt filnavn: "
-START_POS_TEXT = "startposisjon: "
-END_POS_TEXT = "endposisjon: "
-INSERT_TEXT = "Tekst som skal settes inn: "
-NO_FILES_TO_CHANGE_TEXT = "Ingen filer å endre"
-RECURSIVE_TEXT = "Skal alle undermapper endres? "
-
 VALID_ACTIONS = ["lower", "upper", "remove", "insert", "replace"]
 
 def _get_file_ext(file):
@@ -33,17 +20,15 @@ def _input(helptext, valid_input=None):
 	inputtext = raw_input(helptext + ("\n(" + ", ".join(valid_input) + ")" if valid_input else "") + "\n> ")
 	if valid_input:
 		while not inputtext in valid_input:
-			print(VALID_INPUT_IS_TEXT + ", ".join(valid_input))
+			print("Valid input is " + ", ".join(valid_input))
 			inputtext = raw_input("> ").lower()
 	return inputtext
 
 def _print_usage():
-	print("Bruk:")
+	print("Usage:")
 	print("python renamer ACTION POSITION (TEXT)")
 	print("- ACTION: replace, insert, remove, upper, lower")
-	print("- POSITION: posisjon eller start_posposisjon:sluttposisjon")
-	print("            Negative tall vil være posisjon fra enden")
-
+	print("- POSITION: position eller start_position:end_position")
 
 def _get_files_to_be_converted(dir, recursive):
 	if not recursive:
@@ -162,12 +147,12 @@ def rename(working_dir, action, start_pos, end_pos, recursive, insert_text=None,
 			continue
 
 		if (not has_confirmed and not quiet):
-			print("Kommer til å kjøre (i mappen " + working_dir + ") "
-				+ action + " på posisjon " + str(start_pos) + (" til " + str(end_pos) if end_pos else "") +
-				(" med ordet " + insert_text if insert_text else ""))
-			print(ORIGINAL_FILENAME_TEXT + filename)
-			print(NEW_FILENAME_TEXT + new_filename)
-			_confirm_continue(CLICK_ENTER_TO_CONTINUE_TEXT)
+			print("Will run (in folder " + working_dir + ") "
+				+ action + " on position " + str(start_pos) + (" to " + str(end_pos) if end_pos else "") +
+				(" with the word " + insert_text if insert_text else ""))
+			print("Original filename: " + filename)
+			print("New filename: " + new_filename)
+			_confirm_continue("Click Enter to continue...")
 			has_confirmed = True
 
 		changed_files += 1
@@ -178,9 +163,9 @@ def rename(working_dir, action, start_pos, end_pos, recursive, insert_text=None,
 		os.rename(file, new_filepath)
 
 	if changed_files:
-		print("Endret " + str(changed_files) + " filer")
+		print("Changed " + str(changed_files) + " files")
 	else:
-		print(NO_FILES_TO_CHANGE_TEXT)
+		print("No files to be changed.")
 
 
 if __name__ == '__main__':
@@ -189,11 +174,11 @@ if __name__ == '__main__':
 			exit()
 		working_dir = sys.argv[1]
 	else:
-		working_dir = _input(CHOOSE_DIRECTORY_TEXT)
+		working_dir = _input("Path to directory: ")
 
 	while not os.path.exists(working_dir):
 		print("Not a valid directory")
-		working_dir = _input(CHOOSE_DIRECTORY_TEXT)
+		working_dir = _input("Path to directory: ")
 
 	working_dir = os.path.abspath(working_dir)
 
@@ -201,7 +186,7 @@ if __name__ == '__main__':
 		action = sys.argv[2]
 
 	if not action or action not in VALID_ACTIONS:
-		action = _input(CHOOSE_ACTION_TEXT, VALID_ACTIONS)
+		action = _input("Choose action", VALID_ACTIONS)
 
 	if len(sys.argv) > 3:
 		position = sys.argv[3]
@@ -212,9 +197,9 @@ if __name__ == '__main__':
 			start_pos = int(position)
 			end_pos = None
 	else:
-		start_pos = int(_input(START_POS_TEXT))
+		start_pos = int(_input("Start position: "))
 		if action != "insert":
-			end_pos = int(_input(END_POS_TEXT))
+			end_pos = int(_input("End position: "))
 		else:
 			end_pos = None
 
@@ -224,17 +209,17 @@ if __name__ == '__main__':
 		if (len(sys.argv) > 4):
 			insert_text = sys.argv[4]
 		else:
-			insert_text = _input(INSERT_TEXT)
+			insert_text = _input("Text to be inserted: ")
 		if (len(sys.argv) > 5):
 			recursive = sys.argv[5] != "nonrecursive"
 		else:
 			if (len(sys.argv) < 4):
-				recursive = _input(RECURSIVE_TEXT, ["ja", "nei"]) == "ja"
+				recursive = _input("Should subfolders be included?", ["y", "n"]) == "y"
 	else:
 		if (len(sys.argv) > 4):
 			recursive = sys.argv[4] != "nonrecursive"
 		else:
-			recursive = _input(RECURSIVE_TEXT, ["ja", "nei"]) == "ja"
+			recursive = _input("Should subfolders be included?", ["y", "n"]) == "y"
 
 	rename(working_dir, action, start_pos, end_pos, recursive, insert_text, False)
-	_confirm_continue(CLICK_ENTER_TO_EXIT_TEXT)
+	_confirm_continue("Click Enter to exit...")
