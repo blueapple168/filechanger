@@ -3,6 +3,7 @@ import os, sys
 
 IGNORED_FILE_ENDINGS = [".py", ".bat"]
 CLICK_ENTER_TO_CONTINUE_TEXT = "Klikk Enter for å fortsette: "
+CLICK_ENTER_TO_EXIT_TEXT = "Klikk Enter for å avslutte"
 VALID_INPUT_IS_TEXT = "Gyldig input er "
 CHOOSE_DIRECTORY_TEXT = "Hvilken sti vi skal endre filer i: "
 CHOOSE_ACTION_TEXT = "Hva skal vi gjøre? "
@@ -19,8 +20,8 @@ VALID_ACTIONS = ["lower", "upper", "remove", "insert", "replace"]
 def get_file_ext(file):
 	return os.path.splitext(file)[1]
 
-def confirm_continue():
-	raw_input(CLICK_ENTER_TO_CONTINUE_TEXT)
+def confirm_continue(text):
+	raw_input(text)
 
 def input(helptext, valid_input=None):
 	inputtext = raw_input(helptext + ("\n(" + ", ".join(valid_input) + ")" if valid_input else "") + "\n> ")
@@ -195,7 +196,7 @@ for file in files_to_be_converted:
 			(" med ordet " + insert_text if insert_text else ""))
 		print(ORIGINAL_FILENAME_TEXT + filename)
 		print(NEW_FILENAME_TEXT + new_filename)
-		confirm_continue()
+		confirm_continue(CLICK_ENTER_TO_CONTINUE_TEXT)
 		has_confirmed = True
 	changed_files += 1
 
@@ -209,3 +210,4 @@ if changed_files:
 else:
 	print(NO_FILES_TO_CHANGE_TEXT)
 
+confirm_continue(CLICK_ENTER_TO_EXIT_TEXT)
