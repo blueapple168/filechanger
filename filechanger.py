@@ -182,6 +182,7 @@ if __name__ == '__main__':
 
 	working_dir = os.path.abspath(working_dir)
 
+	action = None
 	if len(sys.argv) > 2:
 		action = sys.argv[2]
 
